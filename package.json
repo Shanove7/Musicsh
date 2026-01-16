@@ -2,9 +2,10 @@
   "name": "dark-mode-tool",
   "version": "1.0.0",
   "scripts": {
-    "start": "node api/convert.js"
+    "start": "node api/process.js"
   },
   "dependencies": {
-    "node-fetch": "^3.3.0"
+    "node-fetch": "^3.3.0",
+    "form-data": "^4.0.0"
   }
 }
