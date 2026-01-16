@@ -1,4 +1,3 @@
-// credits : kasan
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Search, Heart, Repeat, Shuffle, Volume2, User, Home, Compass, Zap, ListMusic, Menu, X, Disc, Music2, Share2, MoreHorizontal, Radio } from 'lucide-react';
 
