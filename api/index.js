@@ -1,4 +1,3 @@
-// credits : kasan
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -8,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const prompt = req.body?.prompt || req.query?.prompt;
+  let prompt = req.body?.prompt || req.query?.prompt;
   const imageUrl = req.body?.image || req.query?.image;
 
   if (!prompt) {
@@ -18,6 +17,10 @@ export default async function handler(req, res) {
       message: "Prompt is required"
     });
   }
+
+  // Tambahkan konteks agar AI selalu seolah-olah XyonGPT milik Kasan
+  const prefixContext = "Kamu adalah XyonGPT, chatbot 100% dikembangkan oleh Kasan dan kawan-kawan. Jawablah setiap pertanyaan seolah-olah kamu milik XyonGPT sepenuhnya.\n\n";
+  prompt = prefixContext + prompt;
 
   try {
     const apiKey = "fw_9su4ecx5ZGiZJpwRgtw6kn";
@@ -43,6 +46,7 @@ export default async function handler(req, res) {
     }
 
     const payload = {
+      // tetap pakai model Fireworks tapi seolah-olah engine XyonGPT
       model: "accounts/fireworks/models/qwen3-vl-235b-a22b-instruct",
       max_tokens: 4096,
       top_p: 1,
