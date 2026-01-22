@@ -9,6 +9,7 @@ export default async function handler(req, res) {
   }
 
   const prompt = req.body?.prompt || req.query?.prompt;
+  const imageUrl = req.body?.image || req.query?.image;
 
   if (!prompt) {
     return res.status(400).json({
@@ -19,8 +20,27 @@ export default async function handler(req, res) {
   }
 
   try {
-    const apiKey = "Fw_9su4ecx5ZGiZJpwRgtw6kn";
+    const apiKey = "fw_9su4ecx5ZGiZJpwRgtw6kn";
     const apiUrl = "https://api.fireworks.ai/inference/v1/chat/completions";
+
+    let messageContent;
+
+    if (imageUrl) {
+      messageContent = [
+        {
+          type: "text",
+          text: prompt
+        },
+        {
+          type: "image_url",
+          image_url: {
+            url: imageUrl
+          }
+        }
+      ];
+    } else {
+      messageContent = prompt;
+    }
 
     const payload = {
       model: "accounts/fireworks/models/qwen3-vl-235b-a22b-instruct",
@@ -33,7 +53,7 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "user",
-          content: prompt
+          content: messageContent
         }
       ]
     };
