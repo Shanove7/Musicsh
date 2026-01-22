@@ -14,63 +14,54 @@
 
     <style>
         :root {
-            --bg-color: #0f172a;
-            --chat-bg: #1e293b;
-            --user-msg: #6366f1; /* Indigo */
-            --ai-msg: #334155;    /* Slate */
-            --text-color: #f1f5f9;
-            --accent: #8b5cf6;
+            --bg: #09090b;
+            --chat-bg: #18181b;
+            --primary: #8b5cf6;
+            --user-bg: #7c3aed;
+            --ai-bg: #27272a;
+            --text: #e4e4e7;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
+        
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg);
+            color: var(--text);
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
         /* Header */
         header {
             padding: 15px 20px;
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #334155;
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #3f3f46;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: fixed;
+            top: 0; left: 0; right: 0;
             z-index: 10;
         }
 
-        .brand {
-            font-size: 1.2rem;
-            font-weight: 600;
-            background: linear-gradient(to right, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .status-dot {
-            width: 8px; height: 8px; background: #22c55e; border-radius: 50%;
-            box-shadow: 0 0 5px #22c55e;
-        }
+        .logo { font-weight: 600; font-size: 1.1rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .status { font-size: 0.75rem; color: #a1a1aa; display: flex; align-items: center; gap: 6px; }
+        .dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; }
 
         /* Chat Area */
         #chat-container {
             flex: 1;
-            overflow-y: auto;
+            margin-top: 60px;
             padding: 20px;
+            padding-bottom: 100px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            scroll-behavior: smooth;
+            gap: 15px;
         }
 
         .message {
@@ -79,117 +70,73 @@
             border-radius: 12px;
             font-size: 0.95rem;
             line-height: 1.6;
-            position: relative;
-            word-wrap: break-word;
             animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .user {
-            align-self: flex-end;
-            background: linear-gradient(135deg, var(--user-msg), var(--accent));
-            color: white;
-            border-bottom-right-radius: 2px;
-        }
-
-        .ai {
-            align-self: flex-start;
-            background: var(--ai-msg);
-            color: var(--text-color);
-            border-bottom-left-radius: 2px;
-            border: 1px solid #475569;
-        }
-
-        /* Markdown Styles within Chat */
-        .ai pre {
-            background: #0d1117;
-            padding: 10px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 10px 0;
-            border: 1px solid #30363d;
-        }
+        .user { align-self: flex-end; background: var(--user-bg); color: white; border-bottom-right-radius: 2px; }
+        .ai { align-self: flex-start; background: var(--ai-bg); border: 1px solid #3f3f46; border-bottom-left-radius: 2px; }
+        
+        /* Markdown Styles */
+        .ai pre { background: #111; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 10px 0; border: 1px solid #3f3f46; }
         .ai code { font-family: 'Consolas', monospace; font-size: 0.9rem; }
-        .ai p { margin-bottom: 10px; }
+        .ai p { margin-bottom: 8px; }
         .ai p:last-child { margin-bottom: 0; }
 
         /* Input Area */
         .input-area {
-            padding: 15px 20px;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            padding: 15px;
             background: var(--chat-bg);
-            border-top: 1px solid #334155;
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
+            border-top: 1px solid #3f3f46;
+            display: flex; gap: 10px; align-items: flex-end;
         }
 
         textarea {
             flex: 1;
-            background: #0f172a;
-            border: 1px solid #475569;
+            background: var(--bg);
+            border: 1px solid #3f3f46;
             color: white;
             padding: 12px;
             border-radius: 20px;
             resize: none;
             height: 48px;
-            max-height: 150px;
+            max-height: 120px;
             font-family: inherit;
-            font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s;
         }
 
-        textarea:focus { border-color: var(--accent); }
+        textarea:focus { border-color: var(--primary); }
 
         button {
             width: 48px; height: 48px;
-            background: var(--user-msg);
+            background: var(--primary);
+            color: white;
             border: none;
             border-radius: 50%;
-            color: white;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        button:hover { background: var(--accent); transform: scale(1.05); }
-        button:disabled { background: #475569; cursor: not-allowed; }
-
-        /* Typing Indicator */
-        .typing {
-            display: flex; gap: 5px; padding: 10px 15px; align-self: flex-start;
-            background: var(--ai-msg); border-radius: 12px; margin-bottom: 10px;
-            display: none;
-        }
-        .dot { width: 6px; height: 6px; background: #94a3b8; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out; }
-        .dot:nth-child(1) { animation-delay: -0.32s; }
-        .dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        button:hover { transform: scale(1.05); }
+        button:disabled { background: #3f3f46; cursor: not-allowed; }
 
     </style>
 </head>
 <body>
 
     <header>
-        <div class="brand">
-            <i class="fa-solid fa-robot"></i> Shanove AI
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: #94a3b8;">
-            <div class="status-dot"></div> Online
-        </div>
+        <div class="logo"><i class="fa-solid fa-code"></i> Shanove AI</div>
+        <div class="status"><div class="dot"></div> Online</div>
     </header>
 
     <div id="chat-container">
         <div class="message ai">
-            Halo! Saya Shanove AI (Qwen Powered). Ada yang bisa saya bantu soal coding hari ini?
-        </div>
-        
-        <div class="typing" id="typingIndicator">
-            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            Halo! Saya Shanove AI. Silakan tanya codingan atau apapun!
         </div>
     </div>
 
@@ -199,10 +146,9 @@
     </div>
 
     <script>
-        const chatContainer = document.getElementById('chat-container');
+        const chatBox = document.getElementById('chat-container');
         const input = document.getElementById('promptInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const typingIndicator = document.getElementById('typingIndicator');
+        const btn = document.getElementById('sendBtn');
 
         // Auto resize textarea
         input.addEventListener('input', function() {
@@ -211,82 +157,85 @@
             if(this.value === '') this.style.height = '48px';
         });
 
-        // Enter to send (Shift+Enter for new line)
-        input.addEventListener('keydown', function(e) {
+        // Enter to send
+        input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
 
-        function appendMessage(role, text) {
-            const div = document.createElement('div');
-            div.className = `message ${role}`;
-            
-            if (role === 'ai') {
-                // Render Markdown untuk AI
-                div.innerHTML = marked.parse(text);
-                // Highlight code block
-                div.querySelectorAll('pre code').forEach((block) => {
-                    hljs.highlightElement(block);
-                });
-            } else {
-                // Text biasa untuk User (escape HTML biar aman)
-                div.textContent = text;
-            }
-
-            // Insert sebelum typing indicator
-            chatContainer.insertBefore(div, typingIndicator);
-            scrollToBottom();
-        }
-
-        function showTyping(show) {
-            typingIndicator.style.display = show ? 'flex' : 'none';
-            scrollToBottom();
-        }
-
-        function scrollToBottom() {
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
         async function sendMessage() {
             const text = input.value.trim();
             if (!text) return;
 
-            // 1. Tampilkan pesan user
+            // 1. Tampilkan User Chat
             appendMessage('user', text);
             input.value = '';
             input.style.height = '48px';
-            
-            // 2. Loading state
-            sendBtn.disabled = true;
-            showTyping(true);
+            btn.disabled = true;
+
+            // 2. Tampilkan Loading
+            const loadingId = 'loading-' + Date.now();
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message ai';
+            loadingDiv.id = loadingId;
+            loadingDiv.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sedang berpikir...';
+            chatBox.appendChild(loadingDiv);
+            scrollToBottom();
 
             try {
-                // 3. Request ke API
-                const res = await fetch('/api', {
+                // 3. Request ke Backend
+                const response = await fetch('/api', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: text })
                 });
 
-                const data = await res.json();
+                const data = await response.json();
+                
+                // Hapus Loading
+                document.getElementById(loadingId).remove();
 
-                // 4. Tampilkan balasan AI
-                showTyping(false);
-                if (data.status && data.data.answer) {
+                if (data.status && data.data?.answer) {
                     appendMessage('ai', data.data.answer);
                 } else {
-                    appendMessage('ai', "Maaf, terjadi kesalahan pada server.");
+                    // Tampilkan Error Detail jika ada
+                    const errorMsg = data.server_error 
+                        ? "API Error: " + JSON.stringify(data.server_error, null, 2)
+                        : (data.message || "Unknown error");
+                    
+                    appendMessage('ai', `❌ **Terjadi Kesalahan:**\n\`\`\`json\n${errorMsg}\n\`\`\``);
                 }
 
             } catch (err) {
-                showTyping(false);
-                appendMessage('ai', "Error: Tidak dapat terhubung ke server.");
+                document.getElementById(loadingId).remove();
+                appendMessage('ai', `❌ **Connection Error:** ${err.message}`);
             } finally {
-                sendBtn.disabled = false;
+                btn.disabled = false;
                 input.focus();
             }
+        }
+
+        function appendMessage(role, text) {
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            
+            if (role === 'ai') {
+                div.innerHTML = marked.parse(text);
+                div.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+            } else {
+                div.textContent = text;
+            }
+
+            chatBox.appendChild(div);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
 </body>
