@@ -1,159 +1,296 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xyongpt - Chat AI</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; height: 100vh; background: #f4f4f4; }
-        .sidebar { width: 250px; background: #333; color: white; padding: 20px; overflow-y: auto; }
-        .sidebar h2 { margin-top: 0; }
-        .chat-list { list-style: none; padding: 0; }
-        .chat-list li { padding: 10px; cursor: pointer; border-bottom: 1px solid #555; }
-        .chat-list li:hover { background: #555; }
-        .main { flex: 1; display: flex; flex-direction: column; }
-        .header { background: #007bff; color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .chat-area { flex: 1; padding: 20px; overflow-y: auto; background: white; }
-        .message { margin-bottom: 10px; padding: 10px; border-radius: 5px; }
-        .message.user { background: #e1f5fe; text-align: right; }
-        .message.ai { background: #f1f1f1; }
-        .input-area { padding: 10px; background: #f9f9f9; border-top: 1px solid #ddd; display: flex; align-items: center; }
-        .input-area input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        .input-area button { margin-left: 10px; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        .suggestions { margin-top: 10px; display: none; }
-        .suggestions ul { list-style: none; padding: 0; }
-        .suggestions li { padding: 5px; cursor: pointer; background: #eee; margin-bottom: 5px; border-radius: 3px; }
-        .suggestions li:hover { background: #ddd; }
-        .upload-btn { margin-left: 10px; }
-        .nav { margin-top: 20px; }
-        .nav a { color: white; text-decoration: none; display: block; padding: 10px; border-bottom: 1px solid #555; }
-        .nav a:hover { background: #555; }
-        @media (max-width: 768px) { .sidebar { width: 100%; height: auto; } .main { flex-direction: column; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shanove AI Platform</title>
+
+<style>
+:root {
+  --bg: #0b0f1a;
+  --card: #12182b;
+  --accent: #6cf;
+  --text: #eaeaff;
+  --muted: #9aa4c7;
+}
+
+body.light {
+  --bg: #f5f7ff;
+  --card: #ffffff;
+  --accent: #4b6bff;
+  --text: #111;
+  --muted: #555;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar */
+aside {
+  width: 260px;
+  background: var(--card);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+aside h2 {
+  margin: 0;
+  color: var(--accent);
+}
+
+aside button {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+aside button:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+/* Main */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 12px 16px;
+  background: var(--card);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header span {
+  color: var(--muted);
+}
+
+/* Chat */
+#chat {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.msg {
+  max-width: 75%;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  line-height: 1.4;
+}
+
+.user {
+  background: var(--accent);
+  color: #000;
+  margin-left: auto;
+}
+
+.ai {
+  background: var(--card);
+  border: 1px solid #222;
+}
+
+/* Input */
+form {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: var(--card);
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+form button {
+  padding: 12px 16px;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+pre {
+  background: #000;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  color: #0f0;
+}
+</style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Riwayat Chat</h2>
-        <ul class="chat-list" id="chat-list">
-            <!-- Riwayat chat akan diisi via JS -->
-        </ul>
-        <div class="nav">
-            <a href="#profile">Profil</a>
-            <a href="#gallery">Galeri</a>
-            <a href="#explore">Eksplorasi</a>
-            <a href="#settings">Pengaturan</a>
-            <a href="#help">Bantuan</a>
-        </div>
-    </div>
-    <div class="main">
-        <div class="header">
-            <h1>Xyongpt</h1>
-            <button onclick="toggleSuggestions()">Saran</button>
-        </div>
-        <div class="chat-area" id="chat-area">
-            <!-- Pesan chat akan ditampilkan di sini -->
-        </div>
-        <div class="suggestions" id="suggestions">
-            <ul>
-                <li onclick="useSuggestion('Jelaskan topik ini lebih detail')">Jelaskan topik ini lebih detail</li>
-                <li onclick="useSuggestion('Buat ringkasan')">Buat ringkasan</li>
-                <li onclick="useSuggestion('Ide kreatif')">Ide kreatif</li>
-            </ul>
-        </div>
-        <div class="input-area">
-            <input type="text" id="message-input" placeholder="Ketik pesan...">
-            <input type="file" id="image-upload" accept="image/*" class="upload-btn">
-            <button onclick="sendMessage()">Kirim</button>
-        </div>
-    </div>
 
-    <script>
-        // Asumsi backend API di api/index.js (misalnya, endpoint /chat untuk kirim pesan, /history untuk riwayat)
-        const apiBase = '/api'; // Sesuaikan dengan path backendmu
+<aside>
+  <h2>Shanove AI</h2>
 
-        // Fungsi untuk toggle saran
-        function toggleSuggestions() {
-            const suggestions = document.getElementById('suggestions');
-            suggestions.style.display = suggestions.style.display === 'block' ? 'none' : 'block';
-        }
+  <button onclick="toggleTheme()">🌗 Dark / Light</button>
+  <button onclick="clearChat()">🧹 Clear Chat</button>
+  <button onclick="exportChat()">📥 Export Chat</button>
 
-        // Fungsi untuk gunakan saran
-        function useSuggestion(text) {
-            document.getElementById('message-input').value = text;
-            toggleSuggestions();
-        }
+  <hr>
 
-        // Fungsi kirim pesan (termasuk gambar)
-        async function sendMessage() {
-            const input = document.getElementById('message-input');
-            const fileInput = document.getElementById('image-upload');
-            const message = input.value.trim();
-            const file = fileInput.files[0];
+  <button onclick="showDocs()">📚 Docs API</button>
+  <button onclick="showOwner()">👤 Owner</button>
 
-            if (!message && !file) return;
+  <small style="color:var(--muted)">
+    © 2026 Shanove<br>
+    Creator: Kasan
+  </small>
+</aside>
 
-            // Tambah pesan user ke chat area
-            addMessage(message || '[Gambar dikirim]', 'user');
+<main>
+  <header>
+    <b>AI Chat Playground</b>
+    <span id="stats">0 pesan</span>
+  </header>
 
-            // Kirim ke backend
-            const formData = new FormData();
-            formData.append('message', message);
-            if (file) formData.append('image', file);
+  <div id="chat"></div>
 
-            try {
-                const response = await fetch(`${apiBase}/chat`, { method: 'POST', body: formData });
-                const data = await response.json();
-                addMessage(data.response, 'ai'); // Asumsi response dari backend
-            } catch (error) {
-                addMessage('Error: Gagal mengirim pesan.', 'ai');
-            }
+  <form onsubmit="sendMsg(event)">
+    <input id="prompt" placeholder="Tanya apa saja..." autocomplete="off">
+    <button>Kirim</button>
+  </form>
+</main>
 
-            input.value = '';
-            fileInput.value = '';
-        }
+<script>
+const chatEl = document.getElementById("chat");
+const statsEl = document.getElementById("stats");
+const input = document.getElementById("prompt");
 
-        // Fungsi tambah pesan ke chat area
-        function addMessage(text, sender) {
-            const chatArea = document.getElementById('chat-area');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            messageDiv.textContent = text;
-            chatArea.appendChild(messageDiv);
-            chatArea.scrollTop = chatArea.scrollHeight;
-        }
+let history = JSON.parse(localStorage.getItem("chat_history") || "[]");
 
-        // Load riwayat chat (panggil saat load halaman)
-        async function loadHistory() {
-            try {
-                const response = await fetch(`${apiBase}/history`);
-                const history = await response.json();
-                const chatList = document.getElementById('chat-list');
-                chatList.innerHTML = '';
-                history.forEach(chat => {
-                    const li = document.createElement('li');
-                    li.textContent = chat.title || 'Chat ' + chat.id;
-                    li.onclick = () => loadChat(chat.id);
-                    chatList.appendChild(li);
-                });
-            } catch (error) {
-                console.error('Gagal load riwayat:', error);
-            }
-        }
+/* Init */
+history.forEach(m => addMsg(m.role, m.text));
+updateStats();
 
-        // Fungsi load chat tertentu (opsional, implementasi tergantung backend)
-        function loadChat(chatId) {
-            // Kosongkan chat area dan load pesan dari backend
-            document.getElementById('chat-area').innerHTML = '';
-            // Panggil API untuk pesan chatId
-        }
+/* Functions */
+function addMsg(role, text) {
+  const div = document.createElement("div");
+  div.className = "msg " + role;
+  div.innerText = text;
+  chatEl.appendChild(div);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
 
-        // Load riwayat saat halaman load
-        window.onload = loadHistory;
+function save(role, text) {
+  history.push({ role, text });
+  localStorage.setItem("chat_history", JSON.stringify(history));
+  updateStats();
+}
 
-        // Enter untuk kirim pesan
-        document.getElementById('message-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendMessage();
-        });
-    </script>
+function updateStats() {
+  statsEl.innerText = history.length + " pesan";
+}
+
+async function sendMsg(e) {
+  e.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = "";
+  addMsg("user", text);
+  save("user", text);
+
+  addMsg("ai", "⏳ AI sedang mengetik...");
+
+  try {
+    const res = await fetch("/api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: text })
+    });
+
+    const json = await res.json();
+    chatEl.lastChild.remove();
+
+    const answer = json?.data?.answer || "No response";
+    addMsg("ai", answer);
+    save("ai", answer);
+
+  } catch (err) {
+    chatEl.lastChild.remove();
+    addMsg("ai", "❌ Error koneksi ke server");
+  }
+}
+
+/* Utils */
+function clearChat() {
+  if (!confirm("Hapus semua chat?")) return;
+  history = [];
+  localStorage.removeItem("chat_history");
+  chatEl.innerHTML = "";
+  updateStats();
+}
+
+function exportChat() {
+  let txt = history.map(h =>
+    `[${h.role.toUpperCase()}]\n${h.text}\n`
+  ).join("\n");
+
+  const blob = new Blob([txt], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "shanove-chat.txt";
+  a.click();
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("light");
+}
+
+function showDocs() {
+  alert(`API Docs:
+
+POST /api
+Body:
+{
+  "prompt": "Halo AI"
+}
+
+Response:
+{
+  status: true,
+  data: {
+    answer: "..."
+  }
+}
+`);
+}
+
+function showOwner() {
+  alert(`Owner:
+Kasan
+Founder Shanove / Xyon Community
+
+Website:
+shanove.my.id
+`);
+}
+</script>
+
 </body>
 </html>
