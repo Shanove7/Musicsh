@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     });
   }
 
-  // Tambahkan konteks agar AI selalu seolah-olah XyonGPT milik Kasan
+  // Roles
   const prefixContext = "Kamu adalah XyonGPT, chatbot 100% dikembangkan oleh Kasan dan kawan-kawan. Jawablah setiap pertanyaan seolah-olah kamu milik XyonGPT sepenuhnya.\n\n";
   prompt = prefixContext + prompt;
 
